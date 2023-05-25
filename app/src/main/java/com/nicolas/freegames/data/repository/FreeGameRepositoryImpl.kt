@@ -10,18 +10,18 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class FreeGameRepositoryImpl @Inject constructor(
-    private val freeGameService: FreeGameService
+    private val dataSource: FreeGameDataSource
 ) : FreeGameRepository {
 
     override suspend fun getAllGames(): Flow<List<ModelGame>> = flow {
-        emit(freeGameService.getAllGames().toData())
+        emit(dataSource.getAllGames().toData())
     }
 
     override suspend fun getGamesPerCategory(category: String): Flow<List<ModelGame>> = flow {
-        emit(freeGameService.getGamePerCategory(category = category).toData())
+        emit(dataSource.getGamesPerCategory(category = category).toData())
     }
 
     override suspend fun getGameDetail(gameId: String): Flow<DetailGame> = flow {
-        emit(freeGameService.getGameDetail(gameId).toGameDetail())
+        emit(dataSource.getGameDetail(gameId).toGameDetail())
     }
 }

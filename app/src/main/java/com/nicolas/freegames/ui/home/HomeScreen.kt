@@ -116,8 +116,6 @@ fun CardContainerSelector(
 ) {
 
     var selectedItem by remember { mutableStateOf<Category?>(null) }
-    println("aleixo: recomposition $selectedItem")
-    var cardColor by remember { mutableStateOf(QuartzColor) }
 
     LazyRow {
         items(categories) { category ->
@@ -188,7 +186,7 @@ fun CardCategories(
 @Composable
 fun ContainerGames(
     modifier: Modifier = Modifier,
-    state: GameStateUi,
+    state: HomeUiState,
     viewModel: HomeViewModel,
     navController: NavController
 ) {
@@ -199,34 +197,39 @@ fun ContainerGames(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        if (state.data.isNotEmpty()) {
-            Column(
-                modifier = modifier
-                    .fillMaxSize(),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                LazyVerticalGrid(
-                    horizontalArrangement = Arrangement.spacedBy(10.dp),
-                    columns = GridCells.Fixed(3),
-                    verticalArrangement = Arrangement.spacedBy(10.dp),
-                    contentPadding = PaddingValues(
-                        start = 10.dp,
-                        end = 10.dp,
-                        bottom = 5.dp,
-                        top = 8.dp
-                    ),
-                    modifier = Modifier.fillMaxWidth()
+        when (state) {
+            HomeUiState.Loading -> {
+                CircularProgressIndicator(color = Color.White)
+            }
+            is HomeUiState.Error -> {
+                ErrorModal { viewModel.onEvent(GameUiEvent.FetchAllGames) }
+            }
+            is HomeUiState.Success -> {
+                Column(
+                    modifier = modifier
+                        .fillMaxSize(),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    items(items = state.data) {
-                        CardGame(game = it, navController)
+                    LazyVerticalGrid(
+                        horizontalArrangement = Arrangement.spacedBy(10.dp),
+                        columns = GridCells.Fixed(3),
+                        verticalArrangement = Arrangement.spacedBy(10.dp),
+                        contentPadding = PaddingValues(
+                            start = 10.dp,
+                            end = 10.dp,
+                            bottom = 5.dp,
+                            top = 8.dp
+                        ),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        items(items = state.data) {
+                            CardGame(game = it, navController)
+                        }
                     }
                 }
             }
-        } else if (state.hasError) {
-            ErrorModal { viewModel.onEvent(GameUiEvent.FetchAllGames) }
-        } else {
-            CircularProgressIndicator(color = Color.White)
+            else -> Unit
         }
     }
 }

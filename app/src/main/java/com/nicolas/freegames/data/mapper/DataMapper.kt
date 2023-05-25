@@ -38,13 +38,13 @@ fun GameDetailResponse.toGameDetail() =
         developer = developer,
         dateGame = releaseDate, description = description,
         systemRequirements = SystemRequirements(
-            os = minimumSystemRequirements.os,
-            processor = minimumSystemRequirements.processor,
-            memory = minimumSystemRequirements.memory,
-            graphics = minimumSystemRequirements.graphics,
-            storage = minimumSystemRequirements.storage
+            os = minimumSystemRequirements?.os,
+            processor = minimumSystemRequirements?.processor,
+            memory = minimumSystemRequirements?.memory,
+            graphics = minimumSystemRequirements?.graphics,
+            storage = minimumSystemRequirements?.storage
         ),
-        screenshotsGame = screenshots.map { it.toScreenshotGame() }
+        screenshotsGame = screenshots?.map { it.toScreenshotGame() }
     )
 
 
